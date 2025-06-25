@@ -1,19 +1,35 @@
 import streamlit as st
+from pages import Analise_Geral, Comparacoes, Correlacoes
 
-
-st.sidebar.success('Selecione uma página do menu à esquerda')
 st.set_page_config(page_title="Projeto Saúde Mental", layout="wide")
 st.title("🧠 Saúde Mental no Setor de Tecnologia")
 
-st.markdown("""
-Este projeto usa dados da **OSMI (Open Sourcing Mental Illness)** para analisar padrões relacionados à saúde mental entre profissionais de tecnologia.
+st.sidebar.title("Navegação")
+pagina = st.sidebar.radio("Ir para:", [
+    "Introdução",
+    "Análise Geral",
+    "Comparações",
+    "Correlações"
+])
 
-Explore as páginas ao lado para navegar entre:
-- 📊 Estatísticas e visualizações gerais
-- 📈 Comparações por gênero, país, idade e trabalho remoto
-- 🔁 Correlações entre fatores de apoio e tratamento
+if pagina == "Introdução":
+    st.markdown("""
+    Este projeto usa dados da **OSMI (Open Sourcing Mental Illness)** para analisar padrões relacionados à saúde mental entre profissionais de tecnologia.
 
-Os dados foram obtidos diretamente do repositório [OSMI](https://osmihelp.org/research).
-""")
+    Explore as páginas ao lado para navegar entre:
+    - 📊 Estatísticas e visualizações gerais
+    - 📈 Comparações por gênero, país, idade e trabalho remoto
+    - 🔁 Correlações entre fatores de apoio e tratamento
 
-# st.image("https://miro.medium.com/v2/resize:fit:1200/1*iEzMdG7CQyLP6JAL51_X1g.png", use_column_width=True)
+    Os dados foram obtidos do repositório [OSMI](https://osmihelp.org/research).
+    """)
+    st.image("https://miro.medium.com/v2/resize:fit:1200/1*iEzMdG7CQyLP6JAL51_X1g.png", use_column_width=True)
+
+elif pagina == "Análise Geral":
+    Analise_Geral.show()
+
+elif pagina == "Comparações":
+    Comparacoes.show()
+
+elif pagina == "Correlações":
+    Correlacoes.show()
