@@ -14,4 +14,4 @@ Explore as páginas ao lado para navegar entre:
 Os dados foram obtidos diretamente do repositório [OSMI](https://osmihelp.org/research).
 """)
 
-st.image("https://miro.medium.com/v2/resize:fit:1200/1*iEzMdG7CQyLP6JAL51_X1g.png", use_column_width=True)
+# st.image("https://miro.medium.com/v2/resize:fit:1200/1*iEzMdG7CQyLP6JAL51_X1g.png", use_column_width=True)
