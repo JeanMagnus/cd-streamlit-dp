@@ -1,7 +1,7 @@
 import streamlit as st
 
 
-st.sidebar.success("Página Inicial", icon="🏠")
+st.sidebar.success('Selecione uma página do menu à esquerda')
 st.set_page_config(page_title="Projeto Saúde Mental", layout="wide")
 st.title("🧠 Saúde Mental no Setor de Tecnologia")
 
