@@ -4,13 +4,7 @@ from pages import Analise_Geral, Comparacoes, Correlacoes
 st.set_page_config(page_title="Projeto Saúde Mental", layout="wide")
 st.title("🧠 Saúde Mental no Setor de Tecnologia")
 
-st.sidebar.title("Navegação")
-pagina = st.sidebar.radio("Ir para:", [
-    "Introdução",
-    "Análise Geral",
-    "Comparações",
-    "Correlações"
-])
+
 
 if pagina == "Introdução":
     st.markdown("""
