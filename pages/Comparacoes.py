@@ -3,7 +3,6 @@ import pandas as pd
 import plotly.express as px
 from utils import load_data
 
-
 st.title("📈 Comparações por Grupos")
 df = load_data()
 
