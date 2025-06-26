@@ -33,7 +33,7 @@ with col1:
         color_discrete_sequence=px.colors.sequential.RdBu
     )
 
-    fig_familia.update_layout(legend=dict(orientation="h", yanchor="bottom", y=-0.1, xanchor="center", x=0.5))
+    fig_familia.update_layout(legend=dict(orientation="h", yanchor="bottom", y=-0.5, xanchor="center", x=1))
     col1.plotly_chart(fig_familia, use_container_width=True)
 
 # Gráfico de tratamento
@@ -79,7 +79,7 @@ with col4:
         },
         color_discrete_sequence=px.colors.qualitative.Set2
     )
-    fig_box.update_layout(legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1))
+    fig_box.update_layout(legend=dict(orientation="h", yanchor="bottom", y=0.6, xanchor="right", x=0.95))
     col4.plotly_chart(fig_box, use_container_width=True)
 
 st.markdown("---")
