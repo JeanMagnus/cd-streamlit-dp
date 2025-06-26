@@ -48,7 +48,7 @@ fig_benefits = px.pie(benefits_counts, values='Quantidade', names='Benefícios',
 col3.plotly_chart(fig_benefits, use_container_width=True)
 
 # Gráfico de boxplot (idade x tratamento)
-st.subheader("Distribuição da Idade por Tratamento")
+#st.subheader("Distribuição da Idade por Tratamento")
 df_idade_limpa['treatment'] = df_idade_limpa['treatment'].replace({'Yes': 'Sim', 'No': 'Não'})
 fig_box = px.box(df_idade_limpa, x='treatment', y='Age', color='treatment',
                  title='Distribuição da Idade por Tratamento',
