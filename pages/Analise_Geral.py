@@ -1,25 +1,29 @@
 import streamlit as st
+import pandas as pd
 import plotly.express as px
-from utils import load_data
 
-st.title("📊 Análise Geral dos Dados")
+def load_data():
+    url = "https://raw.githubusercontent.com/JeanMagnus/ciencia-dados/main/survey.csv"
+    df = pd.read_csv(url)
+    return df
+
 df = load_data()
 
-st.subheader("Pré-visualização dos Dados")
-st.dataframe(df.head())
+st.title("Visão Geral da Pesquisa")
 
-st.subheader("Estatísticas Descritivas")
-st.write(df.describe())
+# KPIs
+col1, col2, col3 = st.columns(3)
+col1.metric("Total de Participantes", len(df))
+col2.metric("Colunas", len(df.columns))
+col3.metric("Ano da Pesquisa", "2014")
 
-st.subheader("Distribuição de Histórico Familiar")
-history_counts = df['family_history'].value_counts().reset_index()
-history_counts.columns = ['Histórico Familiar', 'Count']
+# Prévia da Tabela
+st.subheader("Visualização Inicial dos Dados")
+st.dataframe(df.head(), use_container_width=True)
 
-fig_pie = px.pie(
-    history_counts,
-    values='Count',
-    names='Histórico Familiar',
-    title='Histórico Familiar de Problemas Mentais',
-    color_discrete_sequence=['#66b3ff', '#ff9999']
-)
-st.plotly_chart(fig_pie)
+# Contagem por histórico familiar
+st.subheader("Distribuição - Histórico Familiar")
+hist_counts = df['family_history'].value_counts().reset_index()
+hist_counts.columns = ['Histórico Familiar', 'Quantidade']
+fig_pie = px.pie(hist_counts, names='Histórico Familiar', values='Quantidade', title="Histórico Familiar de Problemas Mentais")
+st.plotly_chart(fig_pie, use_container_width=True)
