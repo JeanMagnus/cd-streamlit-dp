@@ -37,7 +37,6 @@ fig_tratamento = px.bar(treat_counts, x='Tratamento', y='Quantidade', color='Tra
                         title='Busca por Tratamento',
                         color_discrete_sequence=px.colors.qualitative.Vivid)
 col2.plotly_chart(fig_tratamento, use_container_width=True)
-
 col3, col4 = st.columns(2)
 
 # Gráfico de benefícios
