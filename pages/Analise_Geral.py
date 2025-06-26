@@ -40,7 +40,7 @@ col2.plotly_chart(fig_tratamento, use_container_width=True)
 col3, col4 = st.columns(2)
 
 # Gráfico de benefícios
-benefits_counts = df['benefits'].replace({'Yes': 'Sim', 'No': 'Não'}).value_counts().reset_index()
+benefits_counts = df['benefits'].replace({'Yes': 'Sim', 'No': 'Não', "Don't know": 'Não sabe'}).value_counts().reset_index()
 benefits_counts.columns = ['Benefícios', 'Quantidade']
 fig_benefits = px.pie(benefits_counts, values='Quantidade', names='Benefícios',
                       title='Benefícios Relacionados à Saúde Mental',
