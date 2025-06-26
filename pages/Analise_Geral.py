@@ -1,4 +1,5 @@
 import streamlit as st
+import pandas as pd
 import plotly.express as px
 from utils import load_data
 
@@ -16,7 +17,7 @@ col2.metric("Com Tratamento", df['treatment'].value_counts().get('Yes', 0))
 col3.metric("Com Histórico Familiar", df['family_history'].value_counts().get('Yes', 0))
 
 st.markdown("### 🔎 Pré-visualização dos Dados")
-st.dataframe(df.head().style.highlight_max(axis=0), use_container_width=True)
+st.dataframe(df.head(), use_container_width=True)
 
 st.markdown("### 📊 Estatísticas Descritivas")
 st.write(df.describe())
