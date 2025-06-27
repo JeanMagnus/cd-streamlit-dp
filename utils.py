@@ -1,26 +1,57 @@
 import pandas as pd
 import streamlit as st
 
-def classify_gender_custom(g):
-    g = str(g).strip().lower()
-    male_terms = ['cis male', 'm', 'male', 'man']
-    female_terms = ['cis female', 'f', 'female', 'woman']
-    trans_terms = ['trans', 'transgender']
-    nonbinary_terms = ['non-binary', 'nonbinary', 'nb']
+def simplificar_genero(genero):
+    genero = str(genero).strip().lower()
 
-    if g in male_terms:
-        return 'Homem'
-    elif g in female_terms:
-        return 'Mulher'
-    elif g in trans_terms:
-        return 'Trans'
-    elif g in nonbinary_terms:
-        return 'Não-binárie'
+    if "trans" in genero:
+        return "Trans"
+
+    elif genero in ['m','male', 'cis male', 'cis man', 'man', 'male (cis)',
+                    'male-ish', 'maile', 'mal', 'msle', 'malr', 'mail', 'make',
+                    'guy (-ish) ^_^', 'ostensibly male, unsure what that really means',
+                    'something kinda male?', 'male leaning androgynous']:
+        return "Homem"
+
+    elif genero in ['f','female', 'cis female', 'cis-female/femme', 'femail',
+                    'femake', 'female (cis)']:
+        return "Mulher"
+
+    elif genero in ['non-binary', 'enby', 'fluid', 'androgyne', 'neuter',
+                    'queer', 'nah', 'all', 'p', 'a little about you',
+                    'queer/she/they']:
+        return "Não-binário"
+
     else:
-        return 'Outro'
+        return "Não-binário"
 
 @st.cache_data
 def load_data():
     df = pd.read_csv('https://raw.githubusercontent.com/JeanMagnus/ciencia-dados/main/survey.csv')
-    df['Gender_clean'] = df['Gender'].apply(classify_gender_custom)
+
+    # Normalização de colunas
+    df.columns = df.columns.str.strip().str.lower().str.replace(" ", "_")
+
+    # Padronização básica de gênero
+    df['gender'] = df['gender'].str.lower().str.strip()
+    df['gender'] = df['gender'].replace({
+        'male': 'male', 'm': 'male', 'man': 'male',
+        'female': 'female', 'f': 'female', 'woman': 'female',
+        'non-binary': 'non-binary', 'nb': 'non-binary',
+        'trans-female': 'trans', 'trans woman': 'trans',
+        'trans male': 'trans', 'trans man': 'trans',
+        'agender': 'non-binary', 'genderqueer': 'non-binary'
+    })
+    df['gender'] = df['gender'].fillna('not specified')
+
+    # Agrupamento final com função robusta
+    df['gender_group'] = df['gender'].apply(simplificar_genero)
+
+    # Grupo unindo Trans e Não-binário
+    df['grupo'] = df['gender_group'].replace({
+        'Trans': 'Trans/NB',
+        'Não-binário': 'Trans/NB'
+    })
+
     return df
+    
