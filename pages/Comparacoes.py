@@ -199,7 +199,7 @@ elif aba == "Percepção de Apoio por Gênero (Radar)":
     # Criar uma cópia do DataFrame para não afetar as outras abas
     df_radar = df.copy()
     # Criar a nova coluna de gênero agrupado apenas neste DataFrame temporário
-    df_radar['gender_group_radar'] = df_radar['gender'].apply(classify_gender_radar)
+    df_radar['gender_group_radar'] = df_radar['Gender'].apply(classify_gender_radar)
 
     # Preparação dos dados para o gráfico
     colunas_map_radar = {
