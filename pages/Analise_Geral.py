@@ -5,7 +5,7 @@ import plotly.express as px
 from utils import load_data
 
 st.set_page_config(layout="wide")
-st.title("📊 Análise Geral do Perfil dos Participantes")
+st.title("Análise Geral do Perfil dos Participantes")
 st.markdown("Esta página apresenta a distribuição das principais variáveis da pesquisa.")
 
 df_original = load_data()
@@ -24,7 +24,6 @@ generos = st.sidebar.multiselect("Gênero:", options=df["gender_group"].unique()
 df_filtrado = df[(df["country"].isin(paises)) & (df["gender_group"].isin(generos))]
 df_idade_limpa = df_filtrado[(df_filtrado['age'] >= 15) & (df_filtrado['age'] <= 80)].copy()
 
-<<<<<<< HEAD
 # LAYOUT PRINCIPAL
 
 # NOVA SEÇÃO DE KPIs DINÂMICOS
@@ -44,10 +43,7 @@ kpi2.metric("Mulheres", mulheres)
 kpi3.metric("Homens", homens)
 kpi4.metric("Outros Gêneros", outros)
 
-=======
-# --- LAYOUT PRINCIPAL ---
 st.markdown(f"**Mostrando resultados para {df_filtrado.shape[0]} participantes.**")
->>>>>>> 35390f4 (problem solved ✅)
 st.markdown("---")
 
 col1, col2 = st.columns(2)
@@ -108,12 +104,5 @@ with col4:
 
 
     st.plotly_chart(fig_box, use_container_width=True)
-
-
-
-
-
 st.markdown("---")
-
-
 st.markdown("Observação: Os dados de idade foram filtrados entre 15 e 80 anos.")
