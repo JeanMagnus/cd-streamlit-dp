@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+# Assumindo que a função load_data está no seu arquivo utils.py
 from utils import load_data
 
 st.set_page_config(layout="wide")
@@ -32,6 +33,7 @@ col1, col2 = st.columns(2)
 with col1:
     history_counts = df_filtrado['family_history'].value_counts().reset_index()
     history_counts.columns = ['Histórico Familiar', 'Quantidade']
+    # CORREÇÃO: Formatação/indentação
     fig_familia = px.pie(
         history_counts,
         values='Quantidade',
@@ -45,6 +47,7 @@ with col1:
 with col2:
     treat_counts = df_filtrado['treatment'].value_counts().reset_index()
     treat_counts.columns = ['Tratamento', 'Quantidade']
+    # CORREÇÃO: Formatação/indentação
     fig_tratamento = px.pie(
         treat_counts,
         values='Quantidade',
@@ -61,6 +64,7 @@ col3, col4 = st.columns(2)
 with col3:
     benefits_counts = df_filtrado['benefits'].value_counts().reset_index()
     benefits_counts.columns = ['Benefícios', 'Quantidade']
+    # CORREÇÃO: Formatação/indentação
     fig_benefits = px.pie(
         benefits_counts,
         values='Quantidade',
@@ -73,12 +77,14 @@ with col3:
 
 # Gráfico 4: Distribuição de Idade
 with col4:
-    df_idade_limpa = df_filtrado[(df_filtrado['age'] >= 15) & (df_filtrado['age'] <= 80)].copy()
+    # CORREÇÃO: 'age' alterado para 'Age' para corresponder ao nome da coluna no arquivo de dados.
+    df_idade_limpa = df_filtrado[(df_filtrado['Age'] >= 15) & (df_filtrado['Age'] <= 80)].copy()
+    # CORREÇÃO: Formatação/indentação e 'age' para 'Age'
     fig_idade = px.histogram(
         df_idade_limpa,
-        x='age',
+        x='Age',
         title='<b>Distribuição de Idade dos Participantes</b>',
-        labels={'age': 'Idade', 'count': 'Quantidade de Pessoas'},
-        nbins=20 # Você pode ajustar o número de "barras" do histograma
+        labels={'Age': 'Idade', 'count': 'Quantidade de Pessoas'},
+        nbins=20
     )
     st.plotly_chart(fig_idade, use_container_width=True)
