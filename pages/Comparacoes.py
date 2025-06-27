@@ -44,7 +44,6 @@ aba = st.selectbox("Escolha uma análise:", [
     "Proporção de Tratamento por Gênero",
     "Percepções sobre Apoio no Trabalho",
     "Medo de Consequências por Gênero",
-    "Percepção de Apoio por Gênero (Radar)" # <-- NOVA OPÇÃO
 ])
 
 # --- Gráficos de Quantidade ---
