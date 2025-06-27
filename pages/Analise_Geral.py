@@ -10,7 +10,10 @@ st.markdown("Esta página apresenta a distribuição das principais variáveis d
 
 df_original = load_data()
 
+<<<<<<< Updated upstream
 # --- TRADUÇÃO E PREPARAÇÃO DOS DADOS ---
+=======
+>>>>>>> Stashed changes
 df = df_original.copy()
 df['family_history'] = df['family_history'].replace({'Yes': 'Sim', 'No': 'Não'})
 df['treatment'] = df['treatment'].replace({'Yes': 'Sim', 'No': 'Não'})
@@ -18,6 +21,7 @@ df['benefits'] = df['benefits'].replace({'Yes': 'Sim', 'No': 'Não', "Don't know
 
 # --- Filtros na Barra Lateral ---
 st.sidebar.header("Filtros")
+<<<<<<< Updated upstream
 paises = st.sidebar.multiselect("País:", options=df["country"].unique(), default=df["country"].unique())
 generos = st.sidebar.multiselect("Gênero:", options=df["gender_group"].unique(), default=df["gender_group"].unique())
 
@@ -26,6 +30,26 @@ df_idade_limpa = df_filtrado[(df_filtrado['age'] >= 15) & (df_filtrado['age'] <=
 
 # --- LAYOUT PRINCIPAL ---
 st.markdown(f"**Mostrando resultados para {df_filtrado.shape[0]} participantes.**")
+=======
+paises = st.sidebar.multiselect("País:", options=df["Country"].unique(), default=df["Country"].unique())
+generos = st.sidebar.multiselect("Gênero:", options=df["Gender_clean"].unique(), default=df["Gender_clean"].unique())
+
+df_filtrado = df[(df["Country"].isin(paises)) & (df["Gender_clean"].isin(generos))]
+
+total_participantes = df_filtrado.shape[0]
+counts_genero = df_filtrado['Gender_clean'].value_counts()
+homens = counts_genero.get('Homem', 0)
+mulheres = counts_genero.get('Mulher', 0)
+outros = counts_genero.get('Outro/Prefiro não dizer', 0)
+
+texto_resultados = (
+    f"**Mostrando resultados para {total_participantes} participantes:** "
+    f"{mulheres} mulheres, {homens} homens e {outros} de outros gêneros."
+)
+st.markdown(texto_resultados)
+# -----------------------------------------
+
+>>>>>>> Stashed changes
 st.markdown("---")
 
 col1, col2 = st.columns(2)
@@ -34,7 +58,10 @@ col1, col2 = st.columns(2)
 with col1:
     history_counts = df_filtrado['family_history'].value_counts().reset_index()
     history_counts.columns = ['Histórico Familiar', 'Quantidade']
+<<<<<<< Updated upstream
     # CORREÇÃO: Formatação/indentação
+=======
+>>>>>>> Stashed changes
     fig_familia = px.pie(
         history_counts,
         values='Quantidade',
@@ -48,7 +75,10 @@ with col1:
 with col2:
     treat_counts = df_filtrado['treatment'].value_counts().reset_index()
     treat_counts.columns = ['Tratamento', 'Quantidade']
+<<<<<<< Updated upstream
     # CORREÇÃO: Formatação/indentação
+=======
+>>>>>>> Stashed changes
     fig_tratamento = px.pie(
         treat_counts,
         values='Quantidade',
@@ -65,7 +95,10 @@ col3, col4 = st.columns(2)
 with col3:
     benefits_counts = df_filtrado['benefits'].value_counts().reset_index()
     benefits_counts.columns = ['Benefícios', 'Quantidade']
+<<<<<<< Updated upstream
     # CORREÇÃO: Formatação/indentação
+=======
+>>>>>>> Stashed changes
     fig_benefits = px.pie(
         benefits_counts,
         values='Quantidade',
@@ -76,8 +109,9 @@ with col3:
     fig_benefits.update_layout(legend=dict(orientation="h", yanchor="top", y=-0.1, xanchor="center", x=0.5, title_text=''))
     st.plotly_chart(fig_benefits, use_container_width=True)
 
-# Gráfico de boxplot (idade x tratamento) (sem alteração, legenda padrão)
+# Gráfico 4: Distribuição de Idade
 with col4:
+<<<<<<< Updated upstream
     df_idade_limpa['treatment'] = df_idade_limpa['treatment'].replace({'Yes': 'Sim', 'No': 'Não'})
     fig_box = px.box(df_idade_limpa, x='treatment', y='age', color='treatment',
         title='Distribuição da Idade por Tratamento',
@@ -95,3 +129,14 @@ st.markdown("---")
 
 
 st.markdown("Observação: Os dados de idade foram filtrados entre 15 e 80 anos.")
+=======
+    df_idade_limpa = df_filtrado[(df_filtrado['Age'] >= 15) & (df_filtrado['Age'] <= 80)].copy()
+    fig_idade = px.histogram(
+        df_idade_limpa,
+        x='Age', 
+        title='<b>Distribuição de Idade dos Participantes</b>',
+        labels={'Age': 'Idade', 'count': 'Quantidade de Pessoas'},
+        nbins=20
+    )
+    st.plotly_chart(fig_idade, use_container_width=True)
+>>>>>>> Stashed changes
