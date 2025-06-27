@@ -28,23 +28,24 @@ with col1:
     fig_familia = px.pie(history_counts, values='Quantidade', names='Histórico Familiar',
                          title='Histórico Familiar de Problemas Mentais',
                          color_discrete_sequence=px.colors.sequential.RdBu)
-    fig_familia.update_layout(legend=dict(orientation="h", yanchor="bottom", y=-0.1, xanchor="center", x=0.5))
+    fig_familia.update_layout(legend=dict(orientation="h", yanchor="bottom", y=-0.2, xanchor="center", x=0.5))
     st.plotly_chart(fig_familia, use_container_width=True)
 
-# Gráfico de tratamento 
+# Gráfico de tratamento (COM LEGENDA ABAIXO)
 with col2:
     treat_counts = df_filtrado['treatment'].replace({'Yes': 'Sim', 'No': 'Não'}).value_counts().reset_index()
     treat_counts.columns = ['Tratamento', 'Quantidade']
     fig_tratamento = px.bar(treat_counts, x='Tratamento', y='Quantidade', color='Tratamento',
-                            title='<b>Busca por Tratamento</b>',
+                            title='Busca por Tratamento',
                             color_discrete_sequence=px.colors.qualitative.Vivid)
-    # --- AJUSTE DA LEGENDA PARA DENTRO DO GRÁFICO ---
+    # --- AJUSTE FINAL DA LEGENDA ---
     fig_tratamento.update_layout(
         legend=dict(
-            yanchor="top",    # Ancora a legenda pelo topo
-            y=0.99,           # Posição vertical (99% da altura, quase no topo)
-            xanchor="right",  # Ancora pela direita
-            x=0.99            # Posição horizontal (99% da largura, quase na direita)
+            orientation="h",    # Orientação horizontal
+            yanchor="top",      # Ancora pelo topo da legenda
+            y=-0.2,             # Posição vertical: -0.2 (20% abaixo do gráfico)
+            xanchor="center",   # Ancora pelo centro
+            x=0.5               # Posição horizontal: 0.5 (centralizado)
         )
     )
     st.plotly_chart(fig_tratamento, use_container_width=True)
@@ -58,23 +59,24 @@ with col3:
     fig_benefits = px.pie(benefits_counts, values='Quantidade', names='Benefícios',
                           title='Benefícios Relacionados à Saúde Mental',
                           color_discrete_sequence=px.colors.sequential.Agsunset)
-    fig_benefits.update_layout(legend=dict(orientation="h", yanchor="bottom", y=-0.1, xanchor="center", x=0.5))
+    fig_benefits.update_layout(legend=dict(orientation="h", yanchor="bottom", y=-0.2, xanchor="center", x=0.5))
     st.plotly_chart(fig_benefits, use_container_width=True)
 
-# Gráfico de boxplot (idade x tratamento) 
+# Gráfico de boxplot (idade x tratamento) (COM LEGENDA ABAIXO)
 with col4:
     df_idade_limpa['treatment'] = df_idade_limpa['treatment'].replace({'Yes': 'Sim', 'No': 'Não'})
     fig_box = px.box(df_idade_limpa, x='treatment', y='Age', color='treatment',
                      title='Distribuição da Idade por Tratamento',
                      labels={"treatment": "Buscou Tratamento?", "Age": "Idade"},
                      color_discrete_sequence=px.colors.qualitative.Set2)
-    # --- AJUSTE DA LEGENDA PARA DENTRO DO GRÁFICO ---
+    # --- AJUSTE FINAL DA LEGENDA ---
     fig_box.update_layout(
         legend=dict(
+            orientation="h",
             yanchor="top",
-            y=0.99,
-            xanchor="right",
-            x=0.99
+            y=-0.2,
+            xanchor="center",
+            x=0.5
         )
     )
     st.plotly_chart(fig_box, use_container_width=True)
