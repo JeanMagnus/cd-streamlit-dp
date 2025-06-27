@@ -10,11 +10,18 @@ df = load_data()
 
 # Filtros
 st.sidebar.header("Filtros")
+<<<<<<< HEAD
 paises = st.sidebar.multiselect("País de residência:", options=df["Country"].unique(), default=df["Country"].unique())
 generos = st.sidebar.multiselect("Gênero:", options=df["Gender_clean"].unique(), default=df["Gender_clean"].unique())
 
 df_filtrado = df[(df["Country"].isin(paises)) & (df["Gender_clean"].isin(generos))]
 df_idade_limpa = df_filtrado[(df_filtrado['age'] >= 15) & (df_filtrado['age'] <= 80)].copy()
+=======
+paises = st.sidebar.multiselect("País:", options=df["country"].unique(), default=df["country"].unique())
+generos = st.sidebar.multiselect("Gênero:", options=df["gender_group"].unique(), default=df["gender_group"].unique())
+
+df_filtrado = df[(df["country"].isin(paises)) & (df["gender_group"].isin(generos))]
+>>>>>>> e835e105436d5120ba78072aa7a07ec200d49ceb
 
 st.markdown("### Estatísticas Descritivas da Idade")
 st.dataframe(df_idade_limpa['age'].describe().to_frame(), use_container_width=True)
@@ -74,6 +81,7 @@ with col3:
 
 # Gráfico de boxplot (idade x tratamento) (sem alteração, legenda padrão)
 with col4:
+<<<<<<< HEAD
     df_idade_limpa['treatment'] = df_idade_limpa['treatment'].replace({'Yes': 'Sim', 'No': 'Não'})
     fig_box = px.box(df_idade_limpa, x='treatment', y='age', color='treatment',
                      title='Distribuição da Idade por Tratamento',
@@ -83,3 +91,16 @@ with col4:
 
 st.markdown("---")
 st.markdown("Observação: Os dados de idade foram filtrados entre 15 e 80 anos.")
+=======
+    # CORREÇÃO: 'age' alterado para 'Age' para corresponder ao nome da coluna no arquivo de dados.
+    df_idade_limpa = df_filtrado[(df_filtrado['age'] >= 15) & (df_filtrado['age'] <= 80)].copy()
+    # CORREÇÃO: Formatação/indentação e 'age' para 'Age'
+    fig_idade = px.histogram(
+        df_idade_limpa,
+        x='age',
+        title='<b>Distribuição de Idade dos Participantes</b>',
+        labels={'age': 'Idade', 'count': 'Quantidade de Pessoas'},
+        nbins=20
+    )
+    st.plotly_chart(fig_idade, use_container_width=True)
+>>>>>>> e835e105436d5120ba78072aa7a07ec200d49ceb
