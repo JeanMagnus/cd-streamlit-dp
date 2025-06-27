@@ -18,10 +18,10 @@ df['benefits'] = df['benefits'].replace({'Yes': 'Sim', 'No': 'Não', "Don't know
 
 # --- Filtros na Barra Lateral ---
 st.sidebar.header("Filtros")
-paises = st.sidebar.multiselect("País:", options=df["Country"].unique(), default=df["Country"].unique())
-generos = st.sidebar.multiselect("Gênero:", options=df["Gender_clean"].unique(), default=df["Gender_clean"].unique())
+paises = st.sidebar.multiselect("País:", options=df["country"].unique(), default=df["country"].unique())
+generos = st.sidebar.multiselect("Gênero:", options=df["gender_group"].unique(), default=df["gender_group"].unique())
 
-df_filtrado = df[(df["Country"].isin(paises)) & (df["Gender_clean"].isin(generos))]
+df_filtrado = df[(df["country"].isin(paises)) & (df["gender_group"].isin(generos))]
 
 # --- LAYOUT PRINCIPAL ---
 st.markdown(f"**Mostrando resultados para {df_filtrado.shape[0]} participantes.**")
@@ -78,13 +78,13 @@ with col3:
 # Gráfico 4: Distribuição de Idade
 with col4:
     # CORREÇÃO: 'age' alterado para 'Age' para corresponder ao nome da coluna no arquivo de dados.
-    df_idade_limpa = df_filtrado[(df_filtrado['Age'] >= 15) & (df_filtrado['Age'] <= 80)].copy()
+    df_idade_limpa = df_filtrado[(df_filtrado['age'] >= 15) & (df_filtrado['age'] <= 80)].copy()
     # CORREÇÃO: Formatação/indentação e 'age' para 'Age'
     fig_idade = px.histogram(
         df_idade_limpa,
-        x='Age',
+        x='age',
         title='<b>Distribuição de Idade dos Participantes</b>',
-        labels={'Age': 'Idade', 'count': 'Quantidade de Pessoas'},
+        labels={'age': 'Idade', 'count': 'Quantidade de Pessoas'},
         nbins=20
     )
     st.plotly_chart(fig_idade, use_container_width=True)
