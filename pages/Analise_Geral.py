@@ -1,90 +1,85 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-# Assumindo que a função load_data está no seu arquivo utils.py
 from utils import load_data
 
 st.set_page_config(layout="wide")
-st.title("📊 Análise Geral do Perfil dos Participantes")
-st.markdown("Esta página apresenta a distribuição das principais variáveis da pesquisa.")
+st.title("Análise Geral dos Dados")
 
-df_original = load_data()
+df = load_data()
 
-# --- TRADUÇÃO E PREPARAÇÃO DOS DADOS ---
-df = df_original.copy()
-df['family_history'] = df['family_history'].replace({'Yes': 'Sim', 'No': 'Não'})
-df['treatment'] = df['treatment'].replace({'Yes': 'Sim', 'No': 'Não'})
-df['benefits'] = df['benefits'].replace({'Yes': 'Sim', 'No': 'Não', "Don't know": 'Não sabe'})
-
-# --- Filtros na Barra Lateral ---
+# Filtros
 st.sidebar.header("Filtros")
-paises = st.sidebar.multiselect("País:", options=df["Country"].unique(), default=df["Country"].unique())
+paises = st.sidebar.multiselect("País de residência:", options=df["Country"].unique(), default=df["Country"].unique())
 generos = st.sidebar.multiselect("Gênero:", options=df["Gender_clean"].unique(), default=df["Gender_clean"].unique())
 
 df_filtrado = df[(df["Country"].isin(paises)) & (df["Gender_clean"].isin(generos))]
+df_idade_limpa = df_filtrado[(df_filtrado['age'] >= 15) & (df_filtrado['age'] <= 80)].copy()
 
-# --- LAYOUT PRINCIPAL ---
-st.markdown(f"**Mostrando resultados para {df_filtrado.shape[0]} participantes.**")
-st.markdown("---")
+st.markdown("### Estatísticas Descritivas da Idade")
+st.dataframe(df_idade_limpa['age'].describe().to_frame(), use_container_width=True)
 
 col1, col2 = st.columns(2)
 
-# Gráfico 1: Distribuição de Histórico Familiar
+# Gráfico de histórico familiar (COM LEGENDA CORRIGIDA)
 with col1:
-    history_counts = df_filtrado['family_history'].value_counts().reset_index()
+    history_counts = df_filtrado['family_history'].replace({'Yes': 'Sim', 'No': 'Não'}).value_counts().reset_index()
     history_counts.columns = ['Histórico Familiar', 'Quantidade']
-    # CORREÇÃO: Formatação/indentação
-    fig_familia = px.pie(
-        history_counts,
-        values='Quantidade',
-        names='Histórico Familiar',
-        title='<b>Distribuição: Histórico Familiar de Problemas Mentais</b>'
+    fig_familia = px.pie(history_counts, values='Quantidade', names='Histórico Familiar',
+                         title='Histórico Familiar de Problemas Mentais',
+                         color_discrete_sequence=px.colors.sequential.RdBu)
+    # --- AJUSTE DA LEGENDA (para baixo e sem título) ---
+    fig_familia.update_layout(
+        legend=dict(
+            orientation="h",
+            yanchor="top",
+            y=-0.1,
+            xanchor="center",
+            x=0.5,
+            title_text=''  # Esta linha remove o título da legenda
+        )
     )
-    fig_familia.update_layout(legend=dict(orientation="h", yanchor="top", y=-0.1, xanchor="center", x=0.5, title_text=''))
     st.plotly_chart(fig_familia, use_container_width=True)
 
-# Gráfico 2: Distribuição da Busca por Tratamento
+# Gráfico de tratamento (sem alteração, legenda padrão)
 with col2:
-    treat_counts = df_filtrado['treatment'].value_counts().reset_index()
+    treat_counts = df_filtrado['treatment'].replace({'Yes': 'Sim', 'No': 'Não'}).value_counts().reset_index()
     treat_counts.columns = ['Tratamento', 'Quantidade']
-    # CORREÇÃO: Formatação/indentação
-    fig_tratamento = px.pie(
-        treat_counts,
-        values='Quantidade',
-        names='Tratamento',
-        title='<b>Distribuição: Busca por Tratamento</b>',
-        color_discrete_sequence=px.colors.qualitative.Vivid
-    )
-    fig_tratamento.update_layout(legend=dict(orientation="h", yanchor="top", y=-0.1, xanchor="center", x=0.5, title_text=''))
+    fig_tratamento = px.bar(treat_counts, x='Tratamento', y='Quantidade', color='Tratamento',
+                            title='Busca por Tratamento',
+                            color_discrete_sequence=px.colors.qualitative.Vivid)
     st.plotly_chart(fig_tratamento, use_container_width=True)
 
 col3, col4 = st.columns(2)
 
-# Gráfico 3: Distribuição de Benefícios
+# Gráfico de benefícios (COM LEGENDA CORRIGIDA)
 with col3:
-    benefits_counts = df_filtrado['benefits'].value_counts().reset_index()
+    benefits_counts = df_filtrado['benefits'].replace({'Yes': 'Sim', 'No': 'Não', "Don't know": 'Não sabe'}).value_counts().reset_index()
     benefits_counts.columns = ['Benefícios', 'Quantidade']
-    # CORREÇÃO: Formatação/indentação
-    fig_benefits = px.pie(
-        benefits_counts,
-        values='Quantidade',
-        names='Benefícios',
-        title='<b>Distribuição: Benefícios de Saúde Mental Oferecidos</b>',
-        color_discrete_sequence=px.colors.sequential.Agsunset
+    fig_benefits = px.pie(benefits_counts, values='Quantidade', names='Benefícios',
+                          title='Benefícios Relacionados à Saúde Mental',
+                          color_discrete_sequence=px.colors.sequential.Agsunset)
+    # --- AJUSTE DA LEGENDA (para baixo e sem título) ---
+    fig_benefits.update_layout(
+        legend=dict(
+            orientation="h",
+            yanchor="top",
+            y=-0.1,
+            xanchor="center",
+            x=0.5,
+            title_text='' # Esta linha remove o título da legenda
+        )
     )
-    fig_benefits.update_layout(legend=dict(orientation="h", yanchor="top", y=-0.1, xanchor="center", x=0.5, title_text=''))
     st.plotly_chart(fig_benefits, use_container_width=True)
 
-# Gráfico 4: Distribuição de Idade
+# Gráfico de boxplot (idade x tratamento) (sem alteração, legenda padrão)
 with col4:
-    # CORREÇÃO: 'age' alterado para 'Age' para corresponder ao nome da coluna no arquivo de dados.
-    df_idade_limpa = df_filtrado[(df_filtrado['Age'] >= 15) & (df_filtrado['Age'] <= 80)].copy()
-    # CORREÇÃO: Formatação/indentação e 'age' para 'Age'
-    fig_idade = px.histogram(
-        df_idade_limpa,
-        x='Age',
-        title='<b>Distribuição de Idade dos Participantes</b>',
-        labels={'Age': 'Idade', 'count': 'Quantidade de Pessoas'},
-        nbins=20
-    )
-    st.plotly_chart(fig_idade, use_container_width=True)
+    df_idade_limpa['treatment'] = df_idade_limpa['treatment'].replace({'Yes': 'Sim', 'No': 'Não'})
+    fig_box = px.box(df_idade_limpa, x='treatment', y='age', color='treatment',
+                     title='Distribuição da Idade por Tratamento',
+                     labels={"treatment": "Buscou Tratamento?", "age": "Idade"},
+                     color_discrete_sequence=px.colors.qualitative.Set2)
+    st.plotly_chart(fig_box, use_container_width=True)
+
+st.markdown("---")
+st.markdown("Observação: Os dados de idade foram filtrados entre 15 e 80 anos.")
