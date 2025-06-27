@@ -22,7 +22,24 @@ generos = st.sidebar.multiselect("Gênero:", options=df["Gender_clean"].unique()
 df_filtrado = df[(df["Country"].isin(paises)) & (df["Gender_clean"].isin(generos))]
 
 # LAYOUT PRINCIPAL
-st.markdown(f"**Mostrando resultados para {df_filtrado.shape[0]} participantes.**")
+
+# NOVA SEÇÃO DE KPIs DINÂMICOS
+st.markdown("### Resultados para a Seleção Atual")
+
+# Calcula as contagens com base nos dados filtrados
+total_participantes = df_filtrado.shape[0]
+counts_genero = df_filtrado['Gender_clean'].value_counts()
+homens = counts_genero.get('Homem', 0)
+mulheres = counts_genero.get('Mulher', 0)
+outros = counts_genero.get('Outro/Prefiro não dizer', 0)
+
+# Cria as colunas para os KPIs
+kpi1, kpi2, kpi3, kpi4 = st.columns(4)
+kpi1.metric("Total de Participantes", total_participantes)
+kpi2.metric("Mulheres", mulheres)
+kpi3.metric("Homens", homens)
+kpi4.metric("Outros Gêneros", outros)
+
 st.markdown("---")
 
 col1, col2 = st.columns(2)
