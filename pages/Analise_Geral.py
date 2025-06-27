@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-# Assumindo que a função load_data está no seu arquivo utils.py
 from utils import load_data
 
 st.set_page_config(layout="wide")
@@ -10,13 +9,13 @@ st.markdown("Esta página apresenta a distribuição das principais variáveis d
 
 df_original = load_data()
 
-# --- TRADUÇÃO E PREPARAÇÃO DOS DADOS ---
+# TRADUÇÃO E PREPARAÇÃO DOS DADOS 
 df = df_original.copy()
 df['family_history'] = df['family_history'].replace({'Yes': 'Sim', 'No': 'Não'})
 df['treatment'] = df['treatment'].replace({'Yes': 'Sim', 'No': 'Não'})
 df['benefits'] = df['benefits'].replace({'Yes': 'Sim', 'No': 'Não', "Don't know": 'Não sabe'})
 
-# --- Filtros na Barra Lateral ---
+# Filtros na Barra Lateral
 st.sidebar.header("Filtros")
 paises = st.sidebar.multiselect("País:", options=df["country"].unique(), default=df["country"].unique())
 generos = st.sidebar.multiselect("Gênero:", options=df["gender_group"].unique(), default=df["gender_group"].unique())
@@ -25,7 +24,6 @@ df_filtrado = df[(df["country"].isin(paises)) & (df["gender_group"].isin(generos
 df_idade_limpa = df_filtrado[(df_filtrado['age'] >= 15) & (df_filtrado['age'] <= 80)].copy()
 
 # LAYOUT PRINCIPAL
-
 # NOVA SEÇÃO DE KPIs DINÂMICOS
 st.markdown("### Resultados para a Seleção Atual")
 
@@ -94,7 +92,7 @@ with col3:
     fig_benefits.update_layout(legend=dict(orientation="h", yanchor="top", y=-0.1, xanchor="center", x=0.5, title_text=''))
     st.plotly_chart(fig_benefits, use_container_width=True)
 
-# Gráfico de boxplot (idade x tratamento) (sem alteração, legenda padrão)
+# Gráfico de boxplot (idade x tratamento)
 with col4:
     df_idade_limpa['treatment'] = df_idade_limpa['treatment'].replace({'Yes': 'Sim', 'No': 'Não'})
     fig_box = px.box(df_idade_limpa, x='treatment', y='age', color='treatment',
