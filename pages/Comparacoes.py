@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 from utils import load_data
+from scipy import stats
 
 st.set_page_config(layout="wide") # Opcional: deixa o layout mais largo
 st.title("📈 Comparações por Grupos")
@@ -12,6 +13,7 @@ df = load_data()
 mapa_traducao_geral = {
     'Yes': 'Sim',
     'No': 'Não',
+    'Maybe': 'Talvez',
     "Don't know": 'Não Sei',
     'Some of them': 'Algum deles'
 }
@@ -20,6 +22,7 @@ mapa_traducao_geral = {
 mapa_cores_geral = {
     'Sim': 'lightgreen',
     'Não': 'lightcoral',
+    'Talvez': 'skyblue',
     'Não Sei': 'khaki',
     'Algum deles': 'khaki'
 }
@@ -38,7 +41,8 @@ aba = st.selectbox("Escolha uma análise:", [
     "Faixa Etária x Tratamento",
     "Gênero x Tratamento",
     "Proporção de Tratamento por Gênero",
-    "Percepções sobre Apoio no Trabalho"
+    "Percepções sobre Apoio no Trabalho",
+    "Medo de Consequências por Gênero"  
 ])
 
 # --- Gráficos de Quantidade ---
@@ -153,3 +157,70 @@ elif aba == "Percepções sobre Apoio no Trabalho":
     )
     fig2.update_layout(yaxis_tickformat='.0%')
     st.plotly_chart(fig2, use_container_width=True)
+
+elif aba == "Medo de Consequências por Gênero":
+    st.markdown("### Análise: Medo de Consequências no Trabalho por Gênero")
+    st.write(
+        "Investigamos se o gênero influencia a percepção de que falar sobre saúde mental "
+        "pode trazer consequências negativas no ambiente de trabalho."
+    )
+
+    # Traduzir a coluna específica para esta análise
+    df['mental_health_consequence_pt'] = df['mental_health_consequence'].map(mapa_traducao_geral)
+
+    # Análise Estatística (Teste Qui-quadrado) em um expander
+    with st.expander("Ver análise estatística (Teste Qui-quadrado)"):
+        contingency_mhc = pd.crosstab(df['gender_group'], df['mental_health_consequence_pt'])
+        st.write("**Tabela de Contingência (Contagem)**")
+        st.dataframe(contingency_mhc)
+
+        try:
+            chi2, p, dof, ex = stats.chi2_contingency(contingency_mhc)
+            st.write("**Resultado do Teste Qui-quadrado:**")
+            st.markdown(f"""
+            * **Estatística Qui-quadrado (χ²):** `{chi2:.3f}`
+            * **p-valor:** `{p:.4f}`
+            """)
+
+            if p < 0.05:
+                st.success(
+                    "**Conclusão:** Com um p-valor menor que 0.05, existe uma associação "
+                    "estatisticamente significativa entre o gênero e o medo de consequências."
+                )
+            else:
+                st.warning(
+                    "**Conclusão:** Com um p-valor maior que 0.05, não há evidências de uma "
+                    "associação estatisticamente significativa entre as variáveis."
+                )
+        except ValueError as e:
+            st.error(f"Não foi possível realizar o teste Qui-quadrado. Erro: {e}")
+
+    # Preparação dos dados para o gráfico de proporção
+    prop_df = (
+        df.groupby('gender_group')['mental_health_consequence_pt']
+        .value_counts(normalize=True)
+        .rename('proporcao')
+        .reset_index()
+    )
+
+    # Criação do Gráfico de Proporção
+    st.markdown("---")
+    st.subheader("Gráfico de Proporção")
+
+    fig = px.bar(
+        prop_df,
+        x='gender_group',
+        y='proporcao',
+        color='mental_health_consequence_pt',
+        barmode='group',
+        title='Proporção do Medo de Consequências no Trabalho por Gênero',
+        labels={
+            "gender_group": "Gênero",
+            "proporcao": "Proporção das Respostas",
+            "mental_health_consequence_pt": "Haverá consequências?"
+        },
+        text_auto='.2%',
+        color_discrete_map=mapa_cores_geral # Aplicar mapa de cores global
+    )
+    fig.update_yaxes(tickformat=".0%") # Formatar eixo Y como porcentagem
+    st.plotly_chart(fig, use_container_width=True)
